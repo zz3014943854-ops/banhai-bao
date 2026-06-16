@@ -62,7 +62,7 @@ const featuredProjects = [
   {
     title: "万里北归，只为霓裳耀风华",
     subtitle: "开机大吉",
-    image: "/covers/wanli-beigui-launch.jpg",
+    image: "covers/wanli-beigui-launch.jpg",
     status: "正式开机",
     producers: "辽宁传媒学院 · 辽宁数字电影产业园有限公司",
     supervisor: "王东辉",
@@ -70,7 +70,7 @@ const featuredProjects = [
   {
     title: "豹笑一家人",
     subtitle: "家庭喜剧·温情呈现",
-    image: "/covers/bao-xiao-yijia.jpg",
+    image: "covers/bao-xiao-yijia.jpg",
     status: "前期筹备",
     producers: "辽宁传媒学院 · 校园创作团队",
     supervisor: "王东辉",
@@ -517,7 +517,7 @@ function CreatePage({ setSubmissions, showToast, setView }) {
   const update = (key, value) => setForm((current) => ({ ...current, [key]: value }));
   const publish = () => {
     if (!form.title.trim()) return showToast("请先填写作品名称");
-    const submission = { id: Date.now(), ...form, status: "审核中", createdAt: "刚刚", cover: files.cover || "/covers/final-presentation.jpg" };
+    const submission = { id: Date.now(), ...form, status: "审核中", createdAt: "刚刚", cover: files.cover || "covers/final-presentation.jpg" };
     setSubmissions((current) => [submission, ...current]);
     setForm({ title: "", category: "校园青春", intro: "", tags: "", director: "", writer: "", actors: "", teacher: "", activity: "2026 辽传短剧展映周" });
     setFiles({ cover: "", video: "" });
