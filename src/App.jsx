@@ -337,6 +337,15 @@ function HomePage({ user, unreadCount, openDrama, setView, setModal }) {
 
   const handlePointerDown = (e) => {
     swipeState.current = { startX: e.clientX, startY: e.clientY, swiped: false };
+    e.currentTarget.setPointerCapture(e.pointerId);
+  };
+
+  const handlePointerMove = (e) => {
+    const deltaX = Math.abs(e.clientX - swipeState.current.startX);
+    const deltaY = Math.abs(e.clientY - swipeState.current.startY);
+    if (deltaX > 10 && deltaX > deltaY) {
+      e.preventDefault();
+    }
   };
 
   const handlePointerUp = (e) => {
@@ -355,14 +364,6 @@ function HomePage({ user, unreadCount, openDrama, setView, setModal }) {
     }
   };
 
-  const handleHeroClickCapture = (e) => {
-    if (swipeState.current.swiped) {
-      e.stopPropagation();
-      e.preventDefault();
-      swipeState.current.swiped = false;
-    }
-  };
-
   const current = featuredProjects[carouselIndex];
 
   return (
@@ -377,12 +378,12 @@ function HomePage({ user, unreadCount, openDrama, setView, setModal }) {
         </button>
       </header>
 
-      <div className="hero-feature launch-feature" style={{ touchAction: "pan-y" }} onPointerDown={handlePointerDown} onPointerUp={handlePointerUp} onClickCapture={handleHeroClickCapture}>
-        <button className="launch-feature__visual" onClick={() => setModal({ type: "featuredProject", data: current })}>
+      <div className="hero-feature launch-feature" style={{ touchAction: "pan-y" }} onPointerDown={handlePointerDown} onPointerMove={handlePointerMove} onPointerUp={handlePointerUp}>
+        <button className="launch-feature__visual" onClick={() => { if (swipeState.current.swiped) { swipeState.current.swiped = false; return; } setModal({ type: "featuredProject", data: current }); }}>
           <img src={current.image} alt={`${current.title}${current.subtitle}`} />
           <span className="launch-feature__badge"><Clapperboard size={13} />重点项目</span>
         </button>
-        <div className="launch-feature__body" onClick={() => setModal({ type: "featuredProject", data: current })}>
+        <div className="launch-feature__body" onClick={() => { if (swipeState.current.swiped) { swipeState.current.swiped = false; return; } setModal({ type: "featuredProject", data: current }); }}>
           <div className="launch-feature__status"><span>{current.status}</span><small>PROJECT SPOTLIGHT</small></div>
           <h1>{current.title}</h1>
           <p>{current.producers}</p>
