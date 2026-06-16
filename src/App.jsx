@@ -333,6 +333,36 @@ function HomePage({ user, unreadCount, openDrama, setView, setModal }) {
     startCarousel();
   };
 
+  const swipeState = useRef({ startX: 0, startY: 0, swiped: false });
+
+  const handlePointerDown = (e) => {
+    swipeState.current = { startX: e.clientX, startY: e.clientY, swiped: false };
+  };
+
+  const handlePointerUp = (e) => {
+    const { startX, startY } = swipeState.current;
+    const deltaX = e.clientX - startX;
+    const deltaY = e.clientY - startY;
+    if (Math.abs(deltaX) > 40 && Math.abs(deltaX) > Math.abs(deltaY)) {
+      swipeState.current.swiped = true;
+      if (deltaX < 0) {
+        setCarouselIndex((prev) => (prev + 1) % featuredProjects.length);
+      } else {
+        setCarouselIndex((prev) => (prev - 1 + featuredProjects.length) % featuredProjects.length);
+      }
+      stopCarousel();
+      startCarousel();
+    }
+  };
+
+  const handleHeroClickCapture = (e) => {
+    if (swipeState.current.swiped) {
+      e.stopPropagation();
+      e.preventDefault();
+      swipeState.current.swiped = false;
+    }
+  };
+
   const current = featuredProjects[carouselIndex];
 
   return (
@@ -347,7 +377,7 @@ function HomePage({ user, unreadCount, openDrama, setView, setModal }) {
         </button>
       </header>
 
-      <div className="hero-feature launch-feature">
+      <div className="hero-feature launch-feature" style={{ touchAction: "pan-y" }} onPointerDown={handlePointerDown} onPointerUp={handlePointerUp} onClickCapture={handleHeroClickCapture}>
         <button className="launch-feature__visual" onClick={() => setModal({ type: "featuredProject", data: current })}>
           <img src={current.image} alt={`${current.title}${current.subtitle}`} />
           <span className="launch-feature__badge"><Clapperboard size={13} />重点项目</span>
